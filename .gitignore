@@ -26,3 +26,7 @@ _testmain.go
 =======
 *.prof
 >>>>>>> a91b67d28747d783731a85ece5b3929e69199f59
+
+replays/*
+
+*.dem
