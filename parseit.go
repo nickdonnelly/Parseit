@@ -6,7 +6,6 @@ import(
     "flag"
     "os"
     "github.com/dotabuff/manta"
-    "github.com/dotabuff/manta/dota"
 )    
 
 var modePtr = flag.String("mode", "text", "The mode of output for this match.")
@@ -60,10 +59,11 @@ func textParse(){
         fmt.Printf("Unable to create match parser: %s", err)
         os.Exit(5)
     }
-    parser.Callbacks.OnCUserMessageSayText2(func(m *dota.CUserMessageSayText2) error {
-        fmt.Printf("%s said: %s\n", m.GetParam1(), m.GetParam2())
-        return nil
-    })
+    parser.Callbacks.OnCUserMessageSayText2(AllchatMessage)
+    parser.Callbacks.OnCDOTAClientMsg_MatchMetadata(MatchMetadata)
+    parser.Callbacks.OnCMsgDOTACombatLogEntry(CombatLogMessage)
+    parser.Callbacks.OnCDOTAUserMsg_UnitEvent(UnitEvent)
+    
     parser.Start()
     fmt.Println("Parsing complete. Printing report.")
     printTextReport()
