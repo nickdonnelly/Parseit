@@ -20,9 +20,20 @@ func MatchMetadata(message *dota.CDOTAClientMsg_MatchMetadata) error{
 }
 
 func CombatLogMessage(message *dota.CMsgDOTACombatLogEntry) error{
-    log_type := message.GetType()
-    fmt.Println(log_type)
-    
+    //fmt.Println(log_type)
+//    if log_type == dota.DOTA_COMBATLOG_TYPES(4){
+//        count++
+//        fmt.Println(count)
+//    }
+    return nil
+}
+
+func ChatEvent(message *dota.CDOTAUserMsg_ChatEvent) error{
+    if fmt.Sprintf("%v", message.GetType()) == "CHAT_MESSAGE_HERO_KILL" {
+        count++
+        fmt.Println(count)
+    }
+    //fmt.Println(message.GetType())
     return nil
 }
 

@@ -62,6 +62,7 @@ func textParse(){
     parser.Callbacks.OnCUserMessageSayText2(AllchatMessage)
     parser.Callbacks.OnCDOTAClientMsg_MatchMetadata(MatchMetadata)
     parser.Callbacks.OnCMsgDOTACombatLogEntry(CombatLogMessage)
+    parser.Callbacks.OnCDOTAUserMsg_ChatEvent(ChatEvent)
     parser.Callbacks.OnCDOTAUserMsg_UnitEvent(UnitEvent)
     
     parser.Start()
