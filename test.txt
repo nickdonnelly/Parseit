@@ -1,0 +1,18 @@
++---------------------------------+
+|           Aegises denied: 00000 |
+|        Aegises picked up: 00001 |
+|           Aegises stolen: 00000 |
+|           Total buybacks: 00002 |
+|           Courier deaths: 00001 |
+|        Total disconnects: 00000 |
+|          Effigies killed: 00001 |
+|              Glyphs used: 00007 |
+|          Heroes randomed: 00000 |
+|    Major items purchased: 00052 |
+|         Total hero kills: 00066 |
+|                   Pauses: 00000 |
+|        Total runes taken: 00027 |
+|             Streak kills: 00045 |
+|        Total tower kills: 00016 |
+|      Victory predictions: 00000 |
++---------------------------------+
