@@ -65,6 +65,9 @@ func textParse(){
     parser.Callbacks.OnCDOTAUserMsg_ChatEvent(ChatEvent)
     parser.Callbacks.OnCDOTAUserMsg_UnitEvent(UnitEvent)
     
+    fmt.Println("Initializing count structures...")
+    InitChatResultsMap() // This allows 0s to be reported, i.e. if there are 0 disconnects and you don't have this line, then disconnects will be completely ommitted from the report.
+    fmt.Println("Starting parser...")
     parser.Start()
     fmt.Println("Parsing complete. Printing report.")
     printTextReport()
@@ -77,5 +80,8 @@ func imageParse(){
 
 
 func printTextReport(){
-    
+    chatResultKeys := GetAlphabetizedKeyListFromMap(ChatResult)
+    for k := range chatResultKeys{
+        fmt.Println(GetPrintableStringFromVariableName(chatResultKeys[k]), ": ", ChatResult[chatResultKeys[k]])
+    }
 }
