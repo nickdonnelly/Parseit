@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-    //"github.com/dotabuff/manta"
+    "github.com/dotabuff/manta"
     "github.com/dotabuff/manta/dota"
 )
 
@@ -25,6 +25,9 @@ func CombatLogMessage(message *dota.CMsgDOTACombatLogEntry) error{
 //        count++
 //        fmt.Println(count)
 //    }
+    if message.GetIsTargetHero() && message.GetType() == 4 {
+      fmt.Println("Hero died!")
+    }
     return nil
 }
 
@@ -67,7 +70,7 @@ func ChatEvent(message *dota.CDOTAUserMsg_ChatEvent) error{
             ChatResult["itemspurchased"]++
         case "CHAT_MESSAGE_VICTORY_PREDICTION_SINGLE_USER_CONFIRM":
             ChatResult["victorypredictions"]++
-        
+
     }
     return nil
 }
@@ -77,6 +80,10 @@ func UnitEvent(message *dota.CDOTAUserMsg_UnitEvent) error{
     return nil
 }
 
+func CombatLogEvent(message *manta.GameEvent) error{
+  fmt.Println("Combat log event grabbed!")
+  return nil
+}
 
 func InitChatResultsMap(){
     ChatResult["killcount"] = 0

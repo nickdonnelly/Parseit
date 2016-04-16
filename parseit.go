@@ -8,7 +8,7 @@ import(
     "os"
     "bufio"
     "github.com/dotabuff/manta"
-)    
+)
 
 var modePtr = flag.String("mode", "text", "The mode of output for this match.")
 var matchPtr = flag.String("match", "", "The match file you would like to parse")
@@ -18,28 +18,18 @@ var outputFilePtr = flag.Bool("save-external", false, "Use this to save the text
 var outputFilenamePtr = flag.String("output-file", "", "This flag specifies a custom filename for text reports. By default they will simply be named with the match ID. Include a file extension.")
 
 
-var heroes [10]Hero
-
-type Hero struct{
-    name string
-    kills int
-    deaths int
-    assists int
-    gold int
-    networth int
-}
-
+// var heroes [10]Hero
 
 func main(){
 
-    
+
     flag.Parse()
-    
+
     if *matchPtr == ""{
         fmt.Println("No match file provided. Try again using the --match=match_file_here flag.")
         os.Exit(2) // code 2 is match-not-found
     }
-    
+
     switch *modePtr{
     case "text":
         textParse()
@@ -60,7 +50,7 @@ func main(){
         fmt.Println("Mode was set incorrectly. Possible options: \ntext \nimage")
         os.Exit(2)
     }
-    
+
 }
 
 func textParse(){
@@ -74,7 +64,9 @@ func textParse(){
     parser.Callbacks.OnCMsgDOTACombatLogEntry(CombatLogMessage)
     parser.Callbacks.OnCDOTAUserMsg_ChatEvent(ChatEvent)
     parser.Callbacks.OnCDOTAUserMsg_UnitEvent(UnitEvent)
-    
+
+		parser.OnGameEvent("dota_combatlog", CombatLogEvent)
+
     fmt.Println("Initializing count structures...")
     InitChatResultsMap() // This allows 0s to be reported, i.e. if there are 0 disconnects and you don't have this line, then disconnects will be completely ommitted from the report.
     fmt.Println("Starting parser...")
@@ -83,7 +75,7 @@ func textParse(){
 }
 
 func imageParse(){
-    
+
 }
 
 
