@@ -32,7 +32,6 @@ func main() {
 	switch *modePtr {
 	case "text":
 		textParse()
-		printTextReport()
 		if *outputFilePtr && *outputFilenamePtr == "" {
 			saveTextReport(strings.TrimSuffix(*matchPtr, ".dem") + ".txt")
 		} else if *outputFilePtr {
@@ -63,21 +62,27 @@ func textParse() {
 	parser.Callbacks.OnCMsgDOTACombatLogEntry(CombatLogMessage)
 	parser.Callbacks.OnCDOTAUserMsg_ChatEvent(ChatEvent)
 	parser.Callbacks.OnCDOTAUserMsg_UnitEvent(UnitEvent)
-
+	parser.Callbacks.OnCSVCMsg_CreateStringTable(CreateStringTable)
+	// parser.Callbacks.OnCSVCMsg_UpdateStringTable(UpdateStringTable)
 	parser.OnGameEvent("dota_combatlog", CombatLogEvent)
 
 	fmt.Println("Initializing count structures...")
-	InitChatResultsMap() // This allows 0s to be reported, i.e. if there are 0 disconnects and you don't have this line, then disconnects will be completely ommitted from the report.
+	InitResultsMaps() // This allows 0s to be reported, i.e. if there are 0 disconnects and you don't have this line, then disconnects will be completely ommitted from the report.
 	fmt.Println("Starting parser...")
 	parser.Start()
+	fmt.Println(parser.LookupStringByIndex("CombatLogNames", 	1))
+	fmt.Println(parser.LookupStringByIndex("CombatLogNames", 2))
+	fmt.Println(parser.LookupStringByIndex("CombatLogNames", 11))
+	fmt.Println(parser.LookupStringByIndex("CombatLogNames", 13))
 	fmt.Println("Parsing complete. Printing report.")
+	printTextReport(parser)
 }
 
 func imageParse() {
 
 }
 
-func printTextReport() {
+func printTextReport(parser *manta.Parser) {
 	chatResultKeys := GetAlphabetizedKeyListFromMap(ChatResult)
 	fmt.Println("+---------------------------------+")
 	for k := range chatResultKeys {
@@ -85,6 +90,11 @@ func printTextReport() {
 		s += fmt.Sprintf("%24v: ", GetPrintableStringFromVariableName(chatResultKeys[k]))
 		s += fmt.Sprintf("%05v |\n", ChatResult[chatResultKeys[k]])
 		fmt.Println(s)
+	}
+
+	for k, v := range HeroDeaths{
+		heroName, g := parser.LookupStringByIndex("CombatLogNames", int32(k))
+		fmt.Println(g, heroName, " died ", v, " times.")
 	}
 	fmt.Println("+---------------------------------+")
 }
