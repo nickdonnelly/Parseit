@@ -18,15 +18,20 @@ func MatchMetadata(message *dota.CDOTAClientMsg_MatchMetadata) error {
 	return nil
 }
 
+var count = 0
+
 func CombatLogMessage(message *dota.CMsgDOTACombatLogEntry) error {
-	//fmt.Println(log_type)
-	//    if log_type == dota.DOTA_COMBATLOG_TYPES(4){
-	//        count++
-	//        fmt.Println(count)
-	//    }
-	if message.GetIsTargetHero() && message.GetType() == 4 {
-		fmt.Println("A level ", message.GetAttackerHeroLevel(), message.GetAttackerName(), "killed a level", message.GetTargetHeroLevel(), message.GetTargetName())
-	}
+  if message.GetIsTargetHero() && uint32(message.GetType()) == 4{
+    if GetHeroStringById(message.GetAttackerName()) == "Lion"{
+      count++
+      fmt.Println(count, " - ", message.GetInflictorName())
+    }
+    fmt.Println("Killer: ", GetHeroStringById(message.GetAttackerName()))
+  }
+	// if message.GetIsTargetHero() && message.GetType() == 4 {
+    // fmt.Println(GetHeroStringById(message.GetTargetSourceName()), message.GetTargetHeroLevel())
+		// fmt.Println("A level ", message.GetAttackerHeroLevel(), GetHeroStringById(message.GetAttackerName()), "killed a level", message.GetTargetHeroLevel(), message.GetTargetName())
+	// }
 	return nil
 }
 

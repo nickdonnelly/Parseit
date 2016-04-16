@@ -44,7 +44,7 @@ func GetPrintableStringFromVariableName(varName string) string {
 }
 
 // Returns the printable hero name for a given hero id. Stored in a literal map, however instead of returning 0 values for unknown keys, it returns the string 'Unknown Hero'
-func GetHeroStringById(heroId int) string {
+func GetHeroStringById(heroId uint32) string {
 	if HeroNames[heroId] == "" {
 		return "Unknown Hero"
 	}else{

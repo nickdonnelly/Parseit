@@ -1,6 +1,6 @@
 package main
 
-type Hero int
+type Hero uint32
 
 var HeroVals = map[Hero]string{
   1: "Anti-Mage",
@@ -116,7 +116,7 @@ var HeroVals = map[Hero]string{
   113: "Arc Warden",
 }
 
-var HeroNames = map[int]string{
+var HeroNames = map[uint32]string{
   1: "Anti-Mage",
   2: "Axe",
   3: "Bane",
@@ -126,8 +126,8 @@ var HeroNames = map[int]string{
   7: "Earthshaker",
   8: "Juggernaut",
   9: "Mirana",
-  10: "Shadow Fiend",
-  11: "Morphling",
+  10: "Morphling",
+  11: "Shadow Fiend",
   12: "Phantom Lancer",
   13: "Puck",
   14: "Pudge",
