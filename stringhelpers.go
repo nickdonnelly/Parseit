@@ -43,9 +43,13 @@ func GetPrintableStringFromVariableName(varName string) string {
 	}
 }
 
-// Returns the printable hero name for a given hero id. Stored in a literal map, so out of bounds errors will return zero values.
+// Returns the printable hero name for a given hero id. Stored in a literal map, however instead of returning 0 values for unknown keys, it returns the string 'Unknown Hero'
 func GetHeroStringById(heroId int) string {
-	return HeroNames[heroId]
+	if HeroNames[heroId] == "" {
+		return "Unknown Hero"
+	}else{
+		return HeroNames[heroId]
+	}
 }
 
 func GetAlphabetizedKeyListFromMap(myMap map[string]int) []string {
