@@ -4,6 +4,7 @@ import (
 	//"log"
 	"bufio"
 	"flag"
+	"strconv"
 	"fmt"
 	"github.com/dotabuff/manta"
 	"parseit/helpers/stringhelper"
@@ -83,28 +84,22 @@ func imageParse() {
 }
 
 func printTextReport(parser *manta.Parser) {
-	var testStruct printhelper.PrintableData
-	testStruct.DataSet = "Chat Data"
-	testStruct.Data = printhelper.GetCorrectedPrintMapFromIntValues(&ChatResult, true)
-	// for k, v := range ChatResult {
-	// 	testStruct.Data[stringhelper.GetPrintableStringFromVariableName(k)] = strconv.Itoa(v)
-	// }
-	printhelper.PrintSingle(testStruct)
+	// First allocate chat report
+	var chatReport printhelper.PrintableData
+	chatReport.DataSet = "Captured Chat Data"
+	chatReport.Data = printhelper.GetCorrectedPrintMapFromIntValues(&ChatResult, true)
 
-	// chatResultKeys := GetAlphabetizedKeyListFromMap(ChatResult)
-	// fmt.Println("+---------------------------------+")
-	// for k := range chatResultKeys {
-	// 	s := "| "
-	// 	s += fmt.Sprintf("%24v: ", GetPrintableStringFromVariableName(chatResultKeys[k]))
-	// 	s += fmt.Sprintf("%05v |\n", ChatResult[chatResultKeys[k]])
-	// 	fmt.Println(s)
-	// }
-	//
-	// for k, v := range HeroDeaths{
-	// 	heroName, g := parser.LookupStringByIndex("CombatLogNames", int32(k))
-	// 	fmt.Println(g, GetHeroStringByInternalName(heroName), " died ", v, " times.")
-	// }
-	// fmt.Println("+---------------------------------+")
+	correctHeroKeys(&HeroDeaths, parser)
+	var deathsReport printhelper.PrintableData
+	deathsReport.DataSet = "Hero Death Data"
+	correctedDeathsMap := correctHeroKeys(&HeroDeaths, parser)
+	deathsReport.Data = printhelper.GetCorrectedPrintMapFromIntValues(&correctedDeathsMap, false)
+
+
+
+	// Print them all at once
+	printhelper.PrintSingle(chatReport)
+	printhelper.PrintSingle(deathsReport)
 }
 
 func saveTextReport(filename string) {
@@ -128,6 +123,17 @@ func saveTextReport(filename string) {
 	f.Sync()
 	writer.Flush()
 	fmt.Println("Printed report into " + filename + ".")
+}
+
+func correctHeroKeys(m *map[string]int, parser *manta.Parser) map[string]int{
+	result := make(map[string]int)
+	for k, v := range *m {
+		parsed, _ := strconv.ParseInt(k, 10, 32)
+		str, _ := parser.LookupStringByIndex("CombatLogNames", int32(parsed))
+		heroName := stringhelper.GetHeroStringByInternalName(str)
+		result[heroName] = v
+	}
+	return result
 }
 
 func check(e error) {
