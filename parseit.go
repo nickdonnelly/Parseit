@@ -94,7 +94,7 @@ func printTextReport(parser *manta.Parser) {
 
 	for k, v := range HeroDeaths{
 		heroName, g := parser.LookupStringByIndex("CombatLogNames", int32(k))
-		fmt.Println(g, heroName, " died ", v, " times.")
+		fmt.Println(g, GetHeroStringByInternalName(heroName), " died ", v, " times.")
 	}
 	fmt.Println("+---------------------------------+")
 }

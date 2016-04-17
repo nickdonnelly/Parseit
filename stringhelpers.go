@@ -2,6 +2,7 @@ package main
 
 import (
 	"sort"
+	"strings"
 )
 
 func GetPrintableStringFromVariableName(varName string) string {
@@ -49,6 +50,16 @@ func GetHeroStringById(heroId uint32) string {
 		return "Unknown Hero"
 	}else{
 		return HeroNames[heroId]
+	}
+}
+
+// Returns the printable hero name for a given internal hero name.
+func GetHeroStringByInternalName(internalName string) string {
+	trimmedString := strings.TrimPrefix(internalName, "npc_dota_hero_")
+	if HeroInternalNames[trimmedString] == "" {
+		return "Unknown Hero"
+	}else{
+		return HeroInternalNames[trimmedString]
 	}
 }
 
