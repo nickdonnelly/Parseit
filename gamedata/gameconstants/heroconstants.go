@@ -1,4 +1,4 @@
-package main
+package gameconstants
 
 type Hero uint32
 

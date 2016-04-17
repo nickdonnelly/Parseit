@@ -1,8 +1,9 @@
-package main
+package stringhelper
 
 import (
 	"sort"
 	"strings"
+	"parseit/gamedata/gameconstants"
 )
 
 func GetPrintableStringFromVariableName(varName string) string {
@@ -46,24 +47,24 @@ func GetPrintableStringFromVariableName(varName string) string {
 
 // Returns the printable hero name for a given hero id. Stored in a literal map, however instead of returning 0 values for unknown keys, it returns the string 'Unknown Hero'
 func GetHeroStringById(heroId uint32) string {
-	if HeroNames[heroId] == "" {
+	if gameconstants.HeroNames[heroId] == "" {
 		return "Unknown Hero"
 	}else{
-		return HeroNames[heroId]
+		return gameconstants.HeroNames[heroId]
 	}
 }
 
 // Returns the printable hero name for a given internal hero name.
 func GetHeroStringByInternalName(internalName string) string {
 	trimmedString := strings.TrimPrefix(internalName, "npc_dota_hero_")
-	if HeroInternalNames[trimmedString] == "" {
+	if gameconstants.HeroInternalNames[trimmedString] == "" {
 		return "Unknown Hero"
 	}else{
-		return HeroInternalNames[trimmedString]
+		return gameconstants.HeroInternalNames[trimmedString]
 	}
 }
 
-func GetAlphabetizedKeyListFromMap(myMap map[string]int) []string {
+func GetAlphabetizedKeyListFromMap(myMap map[string]string) []string {
 	var keys []string
 	for k := range myMap {
 		keys = append(keys, k)

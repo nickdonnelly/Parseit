@@ -6,17 +6,20 @@ import (
 	"flag"
 	"fmt"
 	"github.com/dotabuff/manta"
+	"parseit/helpers/stringhelper"
+	"parseit/helpers/printhelper"
 	"os"
 	"strings"
+	"strconv"
 )
 
 var modePtr = flag.String("mode", "text", "The mode of output for this match.")
 var matchPtr = flag.String("match", "", "The match file you would like to parse")
-
-//var offlinePtr = flag.Bool("offline", false, "Set this to true if you want the match to be downloaded directly instead of found in the current directory.")
 var heroPtr = flag.String("hero", "", "Use this to select the hero you would like to parse data for (only for image mode). Use full names, all lowercase. Separate separate words using a dash character (-).")
-var outputFilePtr = flag.Bool("save-external", false, "Use this to save the text report as an external file instead of only printing it to console.")
 var outputFilenamePtr = flag.String("output-file", "", "This flag specifies a custom filename for text reports. By default they will simply be named with the match ID. Include a file extension.")
+
+var outputFilePtr = flag.Bool("save-external", false, "Use this to save the text report as an external file instead of only printing it to console.")
+var printToTerm =  flag.Bool("print-to-terminal", true, "Set to false if you don't want the report to be printed to the terminal window.")
 
 // var heroes [10]Hero
 
@@ -70,11 +73,7 @@ func textParse() {
 	InitResultsMaps() // This allows 0s to be reported, i.e. if there are 0 disconnects and you don't have this line, then disconnects will be completely ommitted from the report.
 	fmt.Println("Starting parser...")
 	parser.Start()
-	fmt.Println(parser.LookupStringByIndex("CombatLogNames", 	1))
-	fmt.Println(parser.LookupStringByIndex("CombatLogNames", 2))
-	fmt.Println(parser.LookupStringByIndex("CombatLogNames", 11))
-	fmt.Println(parser.LookupStringByIndex("CombatLogNames", 13))
-	fmt.Println("Parsing complete. Printing report.")
+	fmt.Println("Parsing complete.")
 	printTextReport(parser)
 }
 
@@ -83,20 +82,29 @@ func imageParse() {
 }
 
 func printTextReport(parser *manta.Parser) {
-	chatResultKeys := GetAlphabetizedKeyListFromMap(ChatResult)
-	fmt.Println("+---------------------------------+")
-	for k := range chatResultKeys {
-		s := "| "
-		s += fmt.Sprintf("%24v: ", GetPrintableStringFromVariableName(chatResultKeys[k]))
-		s += fmt.Sprintf("%05v |\n", ChatResult[chatResultKeys[k]])
-		fmt.Println(s)
+	fmt.Println("Printing report?")
+	var testStruct printhelper.PrintableData
+	testStruct.DataSet = "Chat Data"
+	testStruct.Data = make(map[string]string)
+	for k, v := range ChatResult {
+		testStruct.Data[stringhelper.GetPrintableStringFromVariableName(k)] = strconv.Itoa(v)
 	}
+	printhelper.PrintSingle(testStruct)
 
-	for k, v := range HeroDeaths{
-		heroName, g := parser.LookupStringByIndex("CombatLogNames", int32(k))
-		fmt.Println(g, GetHeroStringByInternalName(heroName), " died ", v, " times.")
-	}
-	fmt.Println("+---------------------------------+")
+	// chatResultKeys := GetAlphabetizedKeyListFromMap(ChatResult)
+	// fmt.Println("+---------------------------------+")
+	// for k := range chatResultKeys {
+	// 	s := "| "
+	// 	s += fmt.Sprintf("%24v: ", GetPrintableStringFromVariableName(chatResultKeys[k]))
+	// 	s += fmt.Sprintf("%05v |\n", ChatResult[chatResultKeys[k]])
+	// 	fmt.Println(s)
+	// }
+	//
+	// for k, v := range HeroDeaths{
+	// 	heroName, g := parser.LookupStringByIndex("CombatLogNames", int32(k))
+	// 	fmt.Println(g, GetHeroStringByInternalName(heroName), " died ", v, " times.")
+	// }
+	// fmt.Println("+---------------------------------+")
 }
 
 func saveTextReport(filename string) {
@@ -104,11 +112,15 @@ func saveTextReport(filename string) {
 	check(err)
 	defer f.Close()
 	writer := bufio.NewWriter(f)
-	chatResultKeys := GetAlphabetizedKeyListFromMap(ChatResult)
+	var correctedChatResult = make(map[string]string)
+	for k, v := range ChatResult{
+		correctedChatResult[k] = string(v)
+	}
+	chatResultKeys := stringhelper.GetAlphabetizedKeyListFromMap(correctedChatResult)
 	writer.WriteString("+---------------------------------+\n")
 	for k := range chatResultKeys {
 		s := "| "
-		s += fmt.Sprintf("%24v: ", GetPrintableStringFromVariableName(chatResultKeys[k]))
+		s += fmt.Sprintf("%24v: ", stringhelper.GetPrintableStringFromVariableName(chatResultKeys[k]))
 		s += fmt.Sprintf("%05v |\n", ChatResult[chatResultKeys[k]])
 		writer.WriteString(s)
 	}
