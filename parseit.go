@@ -10,7 +10,6 @@ import (
 	"parseit/helpers/printhelper"
 	"os"
 	"strings"
-	"strconv"
 )
 
 var modePtr = flag.String("mode", "text", "The mode of output for this match.")
@@ -74,7 +73,9 @@ func textParse() {
 	fmt.Println("Starting parser...")
 	parser.Start()
 	fmt.Println("Parsing complete.")
-	printTextReport(parser)
+	if *printToTerm {
+		printTextReport(parser)
+	}
 }
 
 func imageParse() {
@@ -82,13 +83,12 @@ func imageParse() {
 }
 
 func printTextReport(parser *manta.Parser) {
-	fmt.Println("Printing report?")
 	var testStruct printhelper.PrintableData
 	testStruct.DataSet = "Chat Data"
-	testStruct.Data = make(map[string]string)
-	for k, v := range ChatResult {
-		testStruct.Data[stringhelper.GetPrintableStringFromVariableName(k)] = strconv.Itoa(v)
-	}
+	testStruct.Data = printhelper.GetCorrectedPrintMapFromIntValues(&ChatResult, true)
+	// for k, v := range ChatResult {
+	// 	testStruct.Data[stringhelper.GetPrintableStringFromVariableName(k)] = strconv.Itoa(v)
+	// }
 	printhelper.PrintSingle(testStruct)
 
 	// chatResultKeys := GetAlphabetizedKeyListFromMap(ChatResult)

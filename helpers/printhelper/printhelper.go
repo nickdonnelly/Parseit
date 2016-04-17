@@ -2,6 +2,7 @@ package printhelper
 
 import (
   "fmt"
+  "strconv"
   // "github.com/dotabuff/manta"
   "parseit/helpers/stringhelper"
 )
@@ -39,6 +40,19 @@ func (pStruct *PrintableData) getPrintString() string{
     result += fmt.Sprintf("| %-39v: %5v |\n", key, pStruct.Data[key])
   }
   result += fmt.Sprintf("+------------------------------------------------+\n")
+  return result
+}
+
+// variableNames denotes whether or not the keys are variable names. If set to true, this will return the keys corrected using the method in stringhelper
+func GetCorrectedPrintMapFromIntValues(mapIn *map[string]int, variableNames bool) map[string]string{
+  result := make(map[string]string)
+  for k, v := range *mapIn{
+    if variableNames{
+      result[stringhelper.GetPrintableStringFromVariableName(k)] = strconv.Itoa(v)
+    }else{
+      result[k] = strconv.Itoa(v)
+    }
+  }
   return result
 }
 

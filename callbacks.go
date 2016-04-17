@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"github.com/dotabuff/manta"
 	"github.com/dotabuff/manta/dota"
 )
 
 var ChatResult = make(map[string]int)
-var HeroDeaths = make(map[uint32]int)
+var HeroDeaths = make(map[string]int)
 
 func AllchatMessage(m *dota.CUserMessageSayText2) error {
 	//fmt.Printf("%s said: %s\n", m.GetParam1(), m.GetMessagename())
@@ -19,12 +20,13 @@ func MatchMetadata(message *dota.CDOTAClientMsg_MatchMetadata) error {
 }
 
 func CombatLogMessage(message *dota.CMsgDOTACombatLogEntry) error {
+	name := strconv.Itoa(int(message.GetTargetName()))
   if message.GetIsTargetHero() && uint32(message.GetType()) == 4{
-    _, ok := HeroDeaths[message.GetTargetName()]
+    _, ok := HeroDeaths[name]
     if ok{
-      HeroDeaths[message.GetTargetName()]++
+      HeroDeaths[name]++
     }else{
-      HeroDeaths[message.GetTargetName()] = 1
+      HeroDeaths[name] = 1
     }
   }
 	return nil
