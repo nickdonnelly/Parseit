@@ -84,22 +84,32 @@ func imageParse() {
 }
 
 func printTextReport(parser *manta.Parser) {
+	correctedDeathsMap := correctHeroKeys(&HeroDeaths, parser)
+	correctedKillsMap := correctHeroKeys(&HeroKills, parser)
+	correctedAssistsMap := correctHeroKeys(&HeroAssists, parser)
+
 	// First allocate chat report
 	var chatReport printhelper.PrintableData
 	chatReport.DataSet = "Captured Chat Data"
 	chatReport.Data = printhelper.GetCorrectedPrintMapFromIntValues(&ChatResult, true)
 
-	correctHeroKeys(&HeroDeaths, parser)
 	var deathsReport printhelper.PrintableData
 	deathsReport.DataSet = "Hero Death Data"
-	correctedDeathsMap := correctHeroKeys(&HeroDeaths, parser)
 	deathsReport.Data = printhelper.GetCorrectedPrintMapFromIntValues(&correctedDeathsMap, false)
 
+	var killsReport printhelper.PrintableData
+	killsReport.DataSet = "Hero Kill Data"
+	killsReport.Data = printhelper.GetCorrectedPrintMapFromIntValues(&correctedKillsMap, false)
 
+	var assistsReport printhelper.PrintableData
+	assistsReport.DataSet = "Hero Assist Data"
+	assistsReport.Data = printhelper.GetCorrectedPrintMapFromIntValues(&correctedAssistsMap, false)
 
 	// Print them all at once
 	printhelper.PrintSingle(chatReport)
 	printhelper.PrintSingle(deathsReport)
+	printhelper.PrintSingle(killsReport)
+	printhelper.PrintSingle(assistsReport)
 }
 
 func saveTextReport(filename string) {

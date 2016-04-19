@@ -9,6 +9,8 @@ import (
 
 var ChatResult = make(map[string]int)
 var HeroDeaths = make(map[string]int)
+var HeroKills = make(map[string]int) // Only stores single kills, not assist data.
+var HeroAssists = make(map[string]int) // Not sure if this will end up storing kills split among assists.
 
 func AllchatMessage(m *dota.CUserMessageSayText2) error {
 	//fmt.Printf("%s said: %s\n", m.GetParam1(), m.GetMessagename())
@@ -20,13 +22,32 @@ func MatchMetadata(message *dota.CDOTAClientMsg_MatchMetadata) error {
 }
 
 func CombatLogMessage(message *dota.CMsgDOTACombatLogEntry) error {
-	name := strconv.Itoa(int(message.GetTargetName()))
+	targetName := strconv.Itoa(int(message.GetTargetName()))
+	attackerName := strconv.Itoa(int(message.GetAttackerName()))
   if message.GetIsTargetHero() && uint32(message.GetType()) == 4{
-    _, ok := HeroDeaths[name]
+		if message.GetIsAttackerHero(){
+			_, ok := HeroKills[attackerName]
+			if ok{
+				HeroKills[attackerName]++
+			}else{
+				HeroKills[attackerName] = 1
+			}
+		}
+
+		for _, v := range message.GetAssistPlayers(){
+			pName := strconv.Itoa(int(v))
+			_, ok := HeroAssists[pName]
+			if ok {
+				HeroAssists[pName]++
+			}else{
+				HeroAssists[pName] = 1
+			}
+		}
+    _, ok := HeroDeaths[targetName]
     if ok{
-      HeroDeaths[name]++
+      HeroDeaths[targetName]++
     }else{
-      HeroDeaths[name] = 1
+      HeroDeaths[targetName] = 1
     }
   }
 	return nil
